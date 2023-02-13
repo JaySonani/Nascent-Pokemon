@@ -1,0 +1,58 @@
+.thumbnail {
+    /* padding: 20px 20px 20px 20px; */
+    /* border: 1px solid red; */
+    object-fit: cover;
+
+
+}
+
+.card {
+    width: 300px;
+    /* height: 500px; */
+}
+.card:hover{
+    box-shadow: 5px 5px 10px 6px rgba(0,0,0,0.2);
+    /* border: 2px solid black; */
+}
+.modal{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 500px;
+    height: 200px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 24;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+
+.info{
+    display: flex;
+    flex-direction: row;
+    width: 50%;
+    justify-content: space-between;
+}
+
+.abilities{
+    display: flex;
+    flex-direction: row;
+    /* border: 2px solid red; */
+}
+
+.chip{
+    margin-right: 10px;
+    size: small;
+}
+
+.name{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    /* border: 2px solid red; */
+    align-items: center;
+}
