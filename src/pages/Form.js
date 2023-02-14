@@ -30,11 +30,12 @@ const Form = () => {
     useEffect(() => {
         // loading form data on page load if there are any in local storage
         let userData = JSON.parse(localStorage.getItem("userData"));
+
         if (userData) {
-            setFirstName(userData.firstName);
-            setLastName(userData.lastName);
-            setPhoneNumber(userData.phoneNumber);
-            setAddress(userData.address);
+            setFirstName(userData.firstName ?? "");
+            setLastName(userData.lastName ?? "");
+            setPhoneNumber(userData.phoneNumber ?? "");
+            setAddress(userData.address ?? "");
         }
     }, []);
 
@@ -102,6 +103,8 @@ const Form = () => {
         setLastNameHelperText("");
         setPhoneNumberHelperText("");
         setAddressHelperText("");
+
+        localStorage.setItem("userData", "{}");
     }
 
     const captureInput = (field, value) => {
@@ -111,22 +114,30 @@ const Form = () => {
         // setting field values
         switch (field) {
             case "firstName":
+                setFirstNameError(false);
+                setFirstNameHelperText("");
                 userData.firstName = value;
                 setFirstName(value);
                 break;
             case "lastName":
+                setLastNameError(false);
+                setLastNameHelperText("");
                 userData.lastName = value;
                 setLastName(value);
                 break;
             case "phoneNumber":
-                userData.phoneNumber = value;
+                setPhoneNumberError(false);
+                setPhoneNumberHelperText("");
                 if (!isNaN(value)) {
+                    userData.phoneNumber = value;
                     setPhoneNumber(value);
                 } else {
                     setPhoneNumberHelperText("Only digits are allowed.");
                 }
                 break;
             case "address":
+                setAddressError(false);
+                setAddressHelperText("");
                 userData.address = value;
                 setAddress(value);
                 break;

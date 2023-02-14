@@ -1,6 +1,6 @@
 # Nascent-Pokemon
 
-To view the deployed live website of this project, [Click here]().
+To view the deployed live website of this project, [Click here](https://stellular-gecko-eb2a85.netlify.app/).
 
 ## Implemented Features
 

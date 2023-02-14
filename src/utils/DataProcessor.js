@@ -13,14 +13,14 @@ const processPokemonData = (pokemonData) => {
         //abilities
         let temp = [];
         pokemon.abilities.map((item) => {
-            temp.push(item.ability.name);
+            return temp.push(item.ability.name);
         });
         newPokemon.abilities = temp;
 
         //types
         temp = [];
         pokemon.types.map((item) => {
-            temp.push(item.type.name);
+            return temp.push(item.type.name);
         });
         newPokemon.types = temp;
 

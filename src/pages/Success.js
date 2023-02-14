@@ -14,7 +14,7 @@ const Success = () => {
             <Typography variant='h6'>Your Pokemon is</Typography>
             <br />
             <br />
-            <img src={pokemon.image} width="250px"  />
+            <img src={pokemon.image} width="250px" alt='selected_pokemon_image' />
             <Typography variant='h5'>{pokemon.name}</Typography>
         </div>
     );

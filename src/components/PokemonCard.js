@@ -78,7 +78,7 @@ const PokemonCard = ({ pokemonDetails }) => {
 
                             <div className='name'>
                                 <Typography variant='h5' >{pokemonDetails?.name}</Typography>
-                                <img src={require('./../assets/pokeball.png')} width={40} />
+                                <img src={require('./../assets/pokeball.png')} width={40} alt="pokeball"/>
                             </div>
                             <br />
 
