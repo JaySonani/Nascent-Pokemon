@@ -1,21 +1,38 @@
-import { useEffect, useState } from "react";
-import PokemonCard from "../components/PokemonCard";
-import { Button, Grid, TextField, Typography } from "@mui/material";
+// importing styles
 import './PokemonList.css';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+
+// importing components
+import PokemonCard from "../components/PokemonCard";
+
+import { useEffect, useState } from "react";
+import { Button, Grid, TextField, Typography } from "@mui/material";
+
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import ResultNotFound from '../components/ResultNotFound';
 
 const PokemonList = () => {
 
+    // pokemonPage: stores current page of pokemon
     const [pokemonPage, setPokemonPage] = useState({})
+
+    // pokemonData: stores data of each pokemon on current page
     const [pokemonData, setPokemonData] = useState([])
 
+    // search box value
     const [searchItem, setSearchItem] = useState("");
+
+    // for pagination
     const [offSet, setOffset] = useState(1);
 
     useEffect(() => {
+        // loading data on page load
         const POKEAPI_URL = "https://pokeapi.co/api/v2/pokemon";
         fetchData(POKEAPI_URL);
+
+        // setting search value from local storage if there is any
+        let searchValue = localStorage.getItem("searchItem") ?? "";
+        setSearchItem(searchValue);
     }, []);
 
     const fetchData = async (url) => {
@@ -56,7 +73,6 @@ const PokemonList = () => {
             });
             Promise.all(response).then(resultData => {
                 setPokemonPage(pokemonPage);
-                // console.log(pokemonPage);
                 setPokemonData(processPokemonData(resultData));
             })
 
@@ -70,7 +86,7 @@ const PokemonList = () => {
 
         pokemonData.forEach(pokemon => {
 
-            var newPokemon = {};
+            let newPokemon = {};
 
             newPokemon.name = pokemon.name[0].toUpperCase() + pokemon.name.substring(1, pokemon.name.length);
             newPokemon.height = pokemon.height;
@@ -78,7 +94,7 @@ const PokemonList = () => {
             newPokemon.image = pokemon.sprites.other.dream_world.front_default;
 
             //abilities
-            var temp = [];
+            let temp = [];
             pokemon.abilities.map((item) => {
                 temp.push(item.ability.name);
             });
@@ -91,29 +107,30 @@ const PokemonList = () => {
             });
             newPokemon.types = temp;
 
-
-
             processedPokemonData.push(newPokemon);
 
         });
-        // console.log(searchPokemon);
+
         return processedPokemonData;
 
     }
 
 
     const changePage = ({ direction }) => {
+        setSearchItem("");
         if (direction) {
             console.log(direction);
-            fetchData(direction)
+            fetchData(direction);
         }
     }
 
-    // console.log("pokemonPage", pokemonPage)
-    // console.log("pokemonData", pokemonData)
+    const captureSearchTerm = (value) => {
+        setSearchItem(value);
+        localStorage.setItem("searchItem", value);
+    }
+
     return (
         <div className="pokemonList">
-
 
             <div className="pokemonHeader">
                 <div>
@@ -128,27 +145,20 @@ const PokemonList = () => {
                         label={'Search Pokemon name'}
                         size="small"
                         value={searchItem}
-                        onChange={(event) => setSearchItem(event.target.value)}
-                        fullWidth
-                    />
+                        onChange={(event) => captureSearchTerm(event.target.value)}
+                        fullWidth />
                 </div>
             </div>
-
 
             <div className="pokemonGrid">
                 <Grid item container spacing={10} className="grid">
                     {
                         pokemonData.filter((pokemon) => {
-                            return pokemon.name.toLowerCase().includes(searchItem.toLocaleLowerCase())
-                        }).map((pokemon, index) => {
-                            if (pokemon == null) {
-                                console.log("No results found");
-                            }
+                            return pokemon.name.toLowerCase().includes(searchItem.toLocaleLowerCase());
+                        }).map((pokemon) => {
+
                             return (
-                                <Grid item
-                                //  xs={12} sm={6}
-                                //     md={3} 
-                                >
+                                <Grid item>
                                     <PokemonCard pokemonDetails={pokemon} />
                                 </Grid>
                             )
@@ -156,7 +166,6 @@ const PokemonList = () => {
                     }
                 </Grid>
             </div>
-
 
             <div className="pokemonFooter">
                 <Button

@@ -1,18 +1,23 @@
-import {useLocation} from 'react-router-dom';
+// importing styles
+import './Success.css';
 
+import { Typography } from '@mui/material';
+import { useLocation } from 'react-router-dom';
 
 const Success = () => {
 
     const location = useLocation();
     const pokemon = location.state;
 
-
-    return(
+    return (
         <div className="successPage">
-            This is success page{pokemon.name}
+            <Typography variant='h6'>Your Pokemon is</Typography>
+            <br />
+            <br />
+            <img src={pokemon.image} />
+            <Typography variant='h5'>{pokemon.name}</Typography>
         </div>
     );
-
 }
 
 export default Success;

@@ -1,11 +1,9 @@
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Swal from 'sweetalert2'
-import { CardActionArea, Chip, Typography } from '@mui/material';
-
-
+// importing styles
 import './PokemonCard.css';
+
+import Swal from 'sweetalert2'
+import { Chip, Card, CardMedia, CardContent, CardActionArea, Typography } from '@mui/material';
+
 import { useNavigate } from 'react-router-dom';
 
 const PokemonCard = ({ pokemonDetails }) => {
@@ -15,19 +13,12 @@ const PokemonCard = ({ pokemonDetails }) => {
     const randomColor = () => {
         let hex = Math.floor(Math.random() * 0xFFFFFF);
         let color = "#" + hex.toString(16);
-
         return color;
     }
 
-    // const selectPokemon = () => {
-    //     console.log(pokemonDetails);
-
-    // }
-
-
-
     return (
         <div className="pokemonCard">
+
             <Card className="card" elevation={5} onClick={() => {
                 Swal.fire({
                     title: pokemonDetails.name,
@@ -48,10 +39,9 @@ const PokemonCard = ({ pokemonDetails }) => {
                             text: 'Your pokemon has been selected!',
                             confirmButtonText: 'Finish',
                             confirmButtonColor: '#1876d1',
-
-
                         }).then(() => {
-                            navigate("/success",{state: pokemonDetails});
+                            localStorage.setItem("selectedPokemon", JSON.stringify(pokemonDetails));
+                            navigate("/success", { state: pokemonDetails });
 
                         })
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -59,37 +49,35 @@ const PokemonCard = ({ pokemonDetails }) => {
                             icon: 'error',
                             title: 'Cancelled',
                             confirmButtonColor: '#1876d1'
-                            
-                        }
-
-                        )
+                        })
                     }
                 })
             }}>
                 <CardActionArea>
-                    <div>
-                        <CardMedia
-                            className='thumbnail'
-                            component="img"
-                            alt="pokemon_thubmnai"
-                            height="250"
-                            image={pokemonDetails?.image}
 
-                        >
-                        </CardMedia>
-                    </div>
+                    <CardMedia
+                        className='thumbnail'
+                        component="img"
+                        alt="pokemon_thubmnai"
+                        height="250"
+                        image={pokemonDetails?.image}
+                    >
+                    </CardMedia>
+
                     <CardContent>
                         <div className='pokemonDetails'>
+
                             <div className='name'>
                                 <Typography variant='h5' >{pokemonDetails?.name}</Typography>
                                 <img src={require('./../assets/pokeball.png')} width={40} />
-
                             </div>
                             <br />
+
                             <div className='info'>
                                 <Typography>Height</Typography>
                                 <Typography>{pokemonDetails?.height}</Typography>
                             </div>
+
                             <div className='info'>
                                 <Typography>Weight</Typography>
                                 <Typography>{pokemonDetails?.weight}</Typography>
@@ -97,6 +85,7 @@ const PokemonCard = ({ pokemonDetails }) => {
                             <br />
 
                             <Typography>Types</Typography>
+
                             <div className='abilities'>
                                 {
                                     pokemonDetails.types.map((type) => {
@@ -106,7 +95,8 @@ const PokemonCard = ({ pokemonDetails }) => {
                                                 variant='outlined'
                                                 className='chip'
                                                 size='small'
-                                                style={{ borderColor: 'black' }} />
+                                                style={{ borderColor: 'black' }}
+                                            />
                                         )
                                     })
                                 }
@@ -114,6 +104,7 @@ const PokemonCard = ({ pokemonDetails }) => {
                             <br />
 
                             <Typography>Abilities</Typography>
+
                             <div className='abilities'>
                                 {
                                     pokemonDetails.abilities.map((ability) => {
@@ -123,12 +114,12 @@ const PokemonCard = ({ pokemonDetails }) => {
                                                 variant='filled'
                                                 className='chip'
                                                 size='small'
-                                                style={{ backgroundColor: randomColor(), color: 'white' }} />
+                                                style={{ backgroundColor: randomColor(), color: 'white' }}
+                                            />
                                         )
                                     })
                                 }
                             </div>
-
 
                         </div>
 
@@ -136,31 +127,6 @@ const PokemonCard = ({ pokemonDetails }) => {
                 </CardActionArea>
             </Card>
 
-            {/* <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
-                open={open}
-                onClose={handleClose}
-                closeAfterTransition
-            >
-                <Fade in={open}>
-                    <Box className='modal'>
-                        <Typography variant='h6'>
-                            Review your selection
-                        </Typography>
-
-                        <Typography variant='h5'>
-                            You have selected
-                        </Typography>
-
-                        <Typography>
-                            {pokemonDetails.name}
-                        </Typography>
-
-                    </Box>
-
-                </Fade>
-            </Modal> */}
         </div>
     );
 

@@ -1,44 +1,62 @@
-import { Button, TextField } from "@mui/material";
-import { useState } from "react";
-import { useNavigate } from "react-router";
+// importing styles
 import './Form.css';
+
+import { Button, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 
 const Form = () => {
 
     const navigate = useNavigate();
 
+    // hooks for form fields
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
     const [address, setAddress] = useState("");
 
+    // hooks for setting form fields
     const [firstNameErrorToggle, setFirstNameError] = useState(false);
     const [lastNameErrorToggle, setLastNameError] = useState(false);
     const [phoneNumberErrorToggle, setPhoneNumberError] = useState(false);
     const [addressErrorToggle, setAddressError] = useState(false);
 
+    // hooks for setting form fields' helper text
     const [firstNameHelperText, setFirstNameHelperText] = useState("");
     const [lastNameHelperText, setLastNameHelperText] = useState("");
     const [phoneNumberHelperText, setPhoneNumberHelperText] = useState("");
     const [addressHelperText, setAddressHelperText] = useState("");
 
+    useEffect(() => {
+        // loading form data on page load if there are any in local storage
+        let userData = JSON.parse(localStorage.getItem("userData"));
+        if (userData) {
+            setFirstName(userData.firstName);
+            setLastName(userData.lastName);
+            setPhoneNumber(userData.phoneNumber);
+            setAddress(userData.address);
+        }
+    }, []);
 
     const validateForm = () => {
 
         var isValidForm = true;
 
+        // firstName validation
         if (firstName === "") {
             setFirstNameError(true);
             setFirstNameHelperText("This field is required");
             isValidForm = false;
         }
 
+        // lastName validation
         if (lastName === "") {
             setLastNameError(true);
             setLastNameHelperText("This field is required");
             isValidForm = false;
         }
 
+        // phoneNumber validation
         if (phoneNumber === "") {
             setPhoneNumberError(true);
             setPhoneNumberHelperText("This field is required");
@@ -49,6 +67,7 @@ const Form = () => {
             isValidForm = false;
         }
 
+        // address validation
         if (address === "") {
             setAddressError(true);
             setAddressHelperText("This field is required");
@@ -56,54 +75,68 @@ const Form = () => {
         }
 
         return isValidForm;
-
     }
-
-    const acceptPhoneNumerInput = (value) => {
-        if (!isNaN(value)) {
-            setPhoneNumber(value);
-        } else {
-            setPhoneNumberHelperText("Only digits are allowed.");
-        }
-    }
-
 
     const submitForm = () => {
-
         const isFormValid = validateForm();
-
         if (isFormValid) {
-            console.log("Form is valid");
-
             navigate('/pokemon_list');
-        
-
-        } else {
-            console.log("Form is invalid");
         }
-
     }
 
     const clearForm = () => {
-
+        // clearing form fields
         setFirstName("");
         setLastName("");
         setPhoneNumber("");
         setAddress("");
 
+        // clearing from fields' error toggle
         setFirstNameError(false);
         setLastNameError(false);
         setPhoneNumberError(false);
         setAddressError(false);
 
+        // clearing form field's helper texts
         setFirstNameHelperText("");
         setLastNameHelperText("");
         setPhoneNumberHelperText("");
         setAddressHelperText("");
-
     }
 
+    const captureInput = (field, value) => {
+        // checking if userData is already stored in local storage
+        let userData = JSON.parse(localStorage.getItem("userData")) ?? {};
 
+        // setting field values
+        switch (field) {
+            case "firstName":
+                userData.firstName = value;
+                setFirstName(value);
+                break;
+            case "lastName":
+                userData.lastName = value;
+                setLastName(value);
+                break;
+            case "phoneNumber":
+                userData.phoneNumber = value;
+                if (!isNaN(value)) {
+                    setPhoneNumber(value);
+                } else {
+                    setPhoneNumberHelperText("Only digits are allowed.");
+                }
+                break;
+            case "address":
+                userData.address = value;
+                setAddress(value);
+                break;
+            default:
+                break;
+        }
+
+        // saving form fields to local storage
+        localStorage.setItem("userData", JSON.stringify(userData));
+    }
 
     return (
         <div className="form">
@@ -113,6 +146,7 @@ const Form = () => {
             </div>
 
             <div className="nameRow">
+
                 <TextField
                     className="firstName"
                     label="First name"
@@ -120,8 +154,9 @@ const Form = () => {
                     value={firstName}
                     error={firstNameErrorToggle}
                     helperText={firstNameHelperText}
-                    onChange={(event) => setFirstName(event.target.value)}
-                    required />
+                    onChange={(event) => captureInput("firstName", event.target.value)}
+                    required
+                    autoFocus />
 
                 <TextField
                     className="lastName"
@@ -130,8 +165,9 @@ const Form = () => {
                     value={lastName}
                     error={lastNameErrorToggle}
                     helperText={lastNameHelperText}
-                    onChange={(event) => setLastName(event.target.value)}
+                    onChange={(event) => captureInput("lastName", event.target.value)}
                     required />
+
             </div>
 
             <TextField
@@ -141,7 +177,7 @@ const Form = () => {
                 value={phoneNumber}
                 error={phoneNumberErrorToggle}
                 helperText={phoneNumberHelperText}
-                onChange={(event) => acceptPhoneNumerInput(event.target.value)}
+                onChange={(event) => captureInput("phoneNumber", event.target.value)}
                 inputProps={{ maxLength: 10 }}
                 required />
 
@@ -152,22 +188,25 @@ const Form = () => {
                 value={address}
                 error={addressErrorToggle}
                 helperText={addressHelperText}
-                onChange={(event) => setAddress(event.target.value)}
+                onChange={(event) => captureInput("address", event.target.value)}
                 required />
 
             <div className="buttonRow">
+
                 <Button
                     className="resetButton"
                     variant="text"
                     onClick={clearForm}>
                     Clear
                 </Button>
+
                 <Button
                     className="submitButton"
                     variant="contained"
                     onClick={submitForm} >
                     Submit
                 </Button>
+
             </div>
 
         </div>

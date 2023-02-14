@@ -8,26 +8,16 @@
     padding: 50px;
     border-radius: 2%;
     box-shadow: 5px 5px 30px rgb(198, 198, 198);
-    ;
+}
+
+.header{
+    font-size: 20px;
+    margin-bottom: 20px;
 }
 
 .inputField {
     width: 400px;
     margin-top: 20px !important;
-
-}
-
- .resetButton, .submitButton {
-    width: 100px !important;
-    margin-top: 20px !important;
-
-}
-
-
-.header{
-    font-size: 20px;
-    margin-bottom: 20px;
-
 }
 
 .nameRow, .buttonRow {
@@ -36,18 +26,17 @@
     width: 400px;
     justify-content: center;
     margin-top: 10px;
+}
 
+.resetButton, .submitButton {
+    width: 100px !important;
+    margin-top: 20px !important;
 }
 
 .firstName, .resetButton{
     margin-right: 10px !important;
 }
+
 .lastName, .submitButton{
     margin-left: 10px !important;
 }
-
-/* .buttonRow{
-    display: flex;
-    flex-direction: row;
-
-} */

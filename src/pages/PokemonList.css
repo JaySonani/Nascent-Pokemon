@@ -1,6 +1,5 @@
 .pokemonHeader {
     height: 70px;
-    /* border: 2px solid red; */
     position: fixed;
     width: 100%;
     z-index: 1;
@@ -19,24 +18,18 @@
 
 .searchBar {
     margin: 10px;
-    /* border: 2px solid red; */
     width: 50%;
 }
 
 .pokemonGrid {
-    /* margin-bottom: 100px;
-    top: 80px;
-    position: relative; */
     margin-top: 100px;
     margin-left: 35px;
     margin-bottom: 80px;
 }
 
 .pokemonFooter {
-    /* margin-top: 20px; */
     width: 100%;
     height: 50px;
-    /* border: 2px solid red; */
     position: fixed;
     bottom: 0;
     background-color: white;
@@ -45,8 +38,4 @@
     display: flex;
     flex-direction: row;
     justify-content: space-around;
-
-
-
-
 }
