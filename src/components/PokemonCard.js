@@ -60,11 +60,20 @@ const PokemonCard = ({ pokemonDetails }) => {
                         component="img"
                         alt="pokemon_thubmnai"
                         height="250"
+                        style={{
+                            width: "auto",
+                            maxHeight: "200px",
+                          }}
+                          sx={{ display: "flex", marginLeft: "auto", 
+                          marginRight: "auto",
+                            padding: "10px"}}
                         image={pokemonDetails?.image}
                     >
                     </CardMedia>
 
-                    <CardContent>
+                    <CardContent 
+                    sx={{borderTop: "1px solid black"}}
+                    >
                         <div className='pokemonDetails'>
 
                             <div className='name'>
@@ -88,9 +97,10 @@ const PokemonCard = ({ pokemonDetails }) => {
 
                             <div className='abilities'>
                                 {
-                                    pokemonDetails.types.map((type) => {
+                                    pokemonDetails.types.map((type, index) => {
                                         return (
                                             <Chip
+                                                key={index}
                                                 label={type}
                                                 variant='outlined'
                                                 className='chip'
@@ -107,9 +117,10 @@ const PokemonCard = ({ pokemonDetails }) => {
 
                             <div className='abilities'>
                                 {
-                                    pokemonDetails.abilities.map((ability) => {
+                                    pokemonDetails.abilities.map((ability, index) => {
                                         return (
                                             <Chip
+                                                key={index}
                                                 label={ability}
                                                 variant='filled'
                                                 className='chip'

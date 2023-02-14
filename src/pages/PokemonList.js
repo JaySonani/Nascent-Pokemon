@@ -4,12 +4,16 @@ import './PokemonList.css';
 // importing components
 import PokemonCard from "../components/PokemonCard";
 
+import Loader from '../components/Loader';
+import ResultNotFound from '../components/ResultNotFound';
+import processPokemonData from '../utils/DataProcessor';
+
 import { useEffect, useState } from "react";
 import { Button, Grid, TextField, Typography } from "@mui/material";
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import ResultNotFound from '../components/ResultNotFound';
+
 
 const PokemonList = () => {
 
@@ -25,7 +29,14 @@ const PokemonList = () => {
     // for pagination
     const [offSet, setOffset] = useState(1);
 
+    // for search filter
+    const [filteredPokemon, setFilteredPokemon] = useState([]);
+
+    // for loading animation
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
+
         // loading data on page load
         const POKEAPI_URL = "https://pokeapi.co/api/v2/pokemon";
         fetchData(POKEAPI_URL);
@@ -35,28 +46,37 @@ const PokemonList = () => {
         setSearchItem(searchValue);
     }, []);
 
+
+    const applyFilter = (value) => {
+
+        let temp = pokemonData.filter((pokemon) => {
+            return pokemon.name.toLowerCase().includes(value.toLocaleLowerCase());
+        });
+
+        setFilteredPokemon(temp);
+    }
+
     const fetchData = async (url) => {
         try {
             var requestOptions = {
                 method: 'GET',
             };
 
-            return fetch(url, requestOptions)
-                .then(response => response.json())
-                .then(pokemonPage => {
-                    fetchPokemonData(pokemonPage)
-                    if (url.includes("offset")) {
-                        var page = (url.split("&")[0].split("=")[1] / 20) + 1;
-                        setOffset(page);
-                    } else {
-                        setOffset(1);
-                    }
-                })
-                .catch(error => console.log('error', error));
+            const response = await fetch(url, requestOptions);
+            const data = await response.json();
+            fetchPokemonData(data);
+
+            if (url.includes("offset")) {
+                let page = (url.split("&")[0].split("=")[1] / 20) + 1;
+                setOffset(page);
+            } else {
+                setOffset(1);
+            }
 
         } catch (error) {
             console.log(error);
         }
+
     };
 
     const fetchPokemonData = async (pokemonPage) => {
@@ -65,56 +85,25 @@ const PokemonList = () => {
                 method: 'GET',
             };
 
-            let response = pokemonPage.results.map((element) => {
-                return fetch(element.url, requestOptions)
-                    .then(response => response.json())
-                    .then(result => result)
-                    .catch(error => console.log('error', error));
+            let response = pokemonPage.results.map(async (element) => {
+                let eachResponse = await fetch(element.url, requestOptions);
+                let data = eachResponse.json();
+                return data;
             });
+
             Promise.all(response).then(resultData => {
+                setIsLoading(false);
                 setPokemonPage(pokemonPage);
-                setPokemonData(processPokemonData(resultData));
+
+                let processedPokemonData = processPokemonData(resultData);
+                setPokemonData(processedPokemonData);
+                setFilteredPokemon(processedPokemonData);
             })
 
         } catch (error) {
             console.log(error);
         }
     };
-
-    const processPokemonData = (pokemonData) => {
-        var processedPokemonData = [];
-
-        pokemonData.forEach(pokemon => {
-
-            let newPokemon = {};
-
-            newPokemon.name = pokemon.name[0].toUpperCase() + pokemon.name.substring(1, pokemon.name.length);
-            newPokemon.height = pokemon.height;
-            newPokemon.weight = pokemon.weight;
-            newPokemon.image = pokemon.sprites.other.dream_world.front_default;
-
-            //abilities
-            let temp = [];
-            pokemon.abilities.map((item) => {
-                temp.push(item.ability.name);
-            });
-            newPokemon.abilities = temp;
-
-            //types
-            temp = [];
-            pokemon.types.map((item) => {
-                temp.push(item.type.name);
-            });
-            newPokemon.types = temp;
-
-            processedPokemonData.push(newPokemon);
-
-        });
-
-        return processedPokemonData;
-
-    }
-
 
     const changePage = ({ direction }) => {
         setSearchItem("");
@@ -127,6 +116,7 @@ const PokemonList = () => {
     const captureSearchTerm = (value) => {
         setSearchItem(value);
         localStorage.setItem("searchItem", value);
+        applyFilter(value);
     }
 
     return (
@@ -135,9 +125,6 @@ const PokemonList = () => {
             <div className="pokemonHeader">
                 <div>
                     <img src={require('./../assets/pokemon-logo.png')} width={100} />
-                </div>
-                <div>
-                    <Typography variant="h6">Choose your pokemon</Typography>
                 </div>
                 <div className='searchBar'>
                     <TextField
@@ -151,25 +138,27 @@ const PokemonList = () => {
             </div>
 
             <div className="pokemonGrid">
-                <Grid item container spacing={10} className="grid">
-                    {
-                        pokemonData.filter((pokemon) => {
-                            return pokemon.name.toLowerCase().includes(searchItem.toLocaleLowerCase());
-                        }).map((pokemon) => {
+                {isLoading ? <Loader /> : filteredPokemon.length != 0 ?
+                    <Grid item container spacing={10} className="grid">
+                        {
+                            filteredPokemon.filter((pokemon) => {
+                                return pokemon.name.toLowerCase().includes(searchItem.toLocaleLowerCase());
+                            }).map((pokemon) => {
 
-                            return (
-                                <Grid item>
-                                    <PokemonCard pokemonDetails={pokemon} />
-                                </Grid>
-                            )
-                        })
-                    }
-                </Grid>
+                                return (
+                                    <Grid item>
+                                        <PokemonCard pokemonDetails={pokemon} />
+                                    </Grid>
+                                )
+                            })
+                        }
+                    </Grid> : <ResultNotFound pokemonName={searchItem} />}
             </div>
 
             <div className="pokemonFooter">
                 <Button
                     variant="text"
+                    sx={{ color: "#a40001" }}
                     onClick={() => changePage({ direction: pokemonPage.previous })}
                     startIcon={<ArrowBackIcon />}
                 >
@@ -182,6 +171,7 @@ const PokemonList = () => {
 
                 <Button
                     variant="text"
+                    sx={{ color: "#a40001" }}
                     onClick={() => changePage({ direction: pokemonPage.next })}
                     endIcon={<ArrowForwardIcon />}
                 >
