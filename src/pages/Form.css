@@ -8,6 +8,14 @@
     padding: 50px;
     border-radius: 2%;
     box-shadow: 5px 5px 30px rgb(198, 198, 198);
+    width: 25%;
+}
+
+@media (max-width : 600px) {
+    .form{
+        width: 60%;
+    }
+
 }
 
 .header{
@@ -16,15 +24,13 @@
 }
 
 .inputField {
-    width: 400px;
     margin-top: 20px !important;
 }
 
 .nameRow, .buttonRow {
     display: flex;
     flex-direction: row;
-    width: 400px;
-    justify-content: center;
+    justify-content: space-between;
     margin-top: 10px;
 }
 
@@ -35,6 +41,10 @@
 
 .firstName, .resetButton{
     margin-right: 10px !important;
+}
+
+.firstName, .lastName{
+    width: 100%;
 }
 
 .lastName, .submitButton{
