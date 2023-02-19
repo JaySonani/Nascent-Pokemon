@@ -107,10 +107,7 @@ const PokemonList = () => {
                 {isLoading ? <Loader /> : filteredPokemon.length !== 0 ?
                     <Grid item container spacing={10} className="grid">
                         {
-                            filteredPokemon.filter((pokemon) => {
-                                return pokemon.name.toLowerCase().includes(searchItem.toLocaleLowerCase());
-                            }).map((pokemon) => {
-
+                            filteredPokemon.map((pokemon) => {
                                 return (
                                     <Grid item>
                                         <PokemonCard pokemonDetails={pokemon} />
